@@ -1,5 +1,6 @@
-<div align='center'>
-![FloodWatch logo](https://imgur.com/a/PrmTTF4)
 
+![FloodWatch logo](images\floodwatchlogo.png "FloodWatch Logo")
+
+<div align=center>
 An interactive web map service for national flood data
 </div>

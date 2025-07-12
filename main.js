@@ -1,18 +1,19 @@
-//Sample code showing data retrieval
+
 const {Client} = require('pg')
 const express = require('express')
 
+require('dotenv').config()
 const app = express()
 app.use(express.json())
 
 
 //Listing the required variable for creating a connecting to the PostgreSQL database
 const con = new Client({
-   host:"localhost",
-   user:"postgres",
-   port: 5432,
-   password:"Admins",
-   database: "demoPhase"
+   host: process.env.DB_HOST,
+   user: process.env.DB_USER,
+   port: process.env.DB_PORT,
+   password: process.env.DB_PASS,
+   database: process.env.DB_NAME
 })
 
 //Establishes a connection
@@ -37,6 +38,5 @@ app.post('/post',(req,res)=>{
 //app.get('/data', )
 
 //Starts node.js server
-const PORT = process.env.PORT || 8000;
 
-app.listen(PORT,()=>{console.log(`Server is listening on port ${PORT}`)})
+app.listen(process.env.SERVER_PORT,()=>{console.log(`Server is listening on port ${process.env.SERVER_PORT}`)})
