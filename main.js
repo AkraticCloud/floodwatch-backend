@@ -1,4 +1,3 @@
-
 const {Client} = require('pg')
 const express = require('express')
 
@@ -15,6 +14,23 @@ const con = new Client({
    password: process.env.DB_PASS,
    database: process.env.DB_NAME
 })
+
+
+async function fetchData(){
+   
+   try{
+      //const version
+      //const entity
+      //const response = await fetch(`https://www.fema.gov/api/open/${version}/${entity}`) //Based on the endpoint provided by OpenFEMA API documentation
+
+      if(!response.ok) throw new Error("Could not fetch requested resource");
+      const data = await response.json();
+   
+   } 
+   catch(error){
+      console.error();
+   }
+}
 
 //Establishes a connection
 con.connect().then(()=> console.log("Successfully connected to the database"))
@@ -34,9 +50,6 @@ app.post('/post',(req,res)=>{
    })
 })
 
-//Function when receiving HTTP GET request with appropriate link
-//app.get('/data', )
 
 //Starts node.js server
-
 app.listen(process.env.SERVER_PORT,()=>{console.log(`Server is listening on port ${process.env.SERVER_PORT}`)})
