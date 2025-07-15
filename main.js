@@ -3,8 +3,7 @@ const express = require('express')
 
 require('dotenv').config()
 const app = express()
-app.use(express.json())
-
+app.use(express.json({limit: '10mb'})) //Limit size of JSON to prevent data flooding from clients
 
 //Listing the required variable for creating a connecting to the PostgreSQL database
 const con = new Client({
@@ -16,12 +15,10 @@ const con = new Client({
 })
 
 
-async function fetchData(){
-   
+async function fetchDataset(){
+   // TODO: Initialize x-api-key header for authorized use of dataset
    try{
-      //const version
-      //const entity
-      //const response = await fetch(`https://www.fema.gov/api/open/${version}/${entity}`) //Based on the endpoint provided by OpenFEMA API documentation
+      const response = await fetch(`https://api.nationalflooddata.com/v3/data`) //Based on the endpoint provided by FEMA Flood Map API documentation
 
       if(!response.ok) throw new Error("Could not fetch requested resource");
       const data = await response.json();
@@ -32,13 +29,13 @@ async function fetchData(){
    }
 }
 
-//Establishes a connection
+//Establishes connection to database
 con.connect().then(()=> console.log("Successfully connected to the database"))
 
-//Function when receiving a post request with appropriate link
-app.post('/post',(req,res)=>{
+//POST route for flood risk data from OpenFEMP API
+app.post('/postFloodData',(req,res)=>{
    const{id,value} = req.body
-   const insert_query = 'insert into demotable (id,value) values ($1,$2)'
+   const insert_query = 'insert into FloodRisks (id,value) values ($1,$2)' //Dummy query, will change with appropriate values
 
    con.query(insert_query,[id,value], (err,result) => {
       if(err){
@@ -49,7 +46,6 @@ app.post('/post',(req,res)=>{
       }
    })
 })
-
 
 //Starts node.js server
 app.listen(process.env.SERVER_PORT,()=>{console.log(`Server is listening on port ${process.env.SERVER_PORT}`)})
