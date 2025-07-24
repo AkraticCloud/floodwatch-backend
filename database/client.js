@@ -1,4 +1,4 @@
-const {Client} = require('pg')
+const {Client, Result} = require('pg')
 
 require('dotenv').config()
 

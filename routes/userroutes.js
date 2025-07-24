@@ -2,13 +2,10 @@
 
 const bcrypt = require("bcrypt")
 const con = require("../database/client")
-const crypto = require('crypto')
 const express = require('express');
-const { Console } = require("console");
 const router = express.Router();
 
 require('dotenv').config()
-
 
 /* We expect the client to send a JSON in the format:
             {
@@ -27,8 +24,8 @@ router.post(`/register`, async(req,res) =>{
       const salt = await bcrypt.genSalt() // Gererate a salt prefix to our user's password
       const hash = await bcrypt.hash(req.body.password, salt) //Generates a hashed version of user passwords that are compared when users login to ensure security
 
-      const user = {name:req.body.name, pass: hash}
-      const createUserQuery = 'INSERT INTO UserTable (username,password) VALUES ($1,$2)' // Insert query for storing user profile info
+      const user = {name: req.body.name, pass: hash}
+      const createUserQuery = 'INSERT INTO floodwatch_prototype.usertable (username,password) VALUES ($1,$2)' // Insert query for storing user profile info
 
       con.query(createUserQuery, [user.name,user.pass], (err,result) =>{
          if(err){ 
@@ -46,23 +43,34 @@ router.post(`/register`, async(req,res) =>{
 //POST route for loging in user profiles with appropriate login inputs from client
 router.post('/login', async(req,res)=> {
    try{
-      con.query('SELECT password FROM UserTable WHERE username = $1;', [req.body.username], async(err,result)=> { // Retrieve the hashed password and the salt prefix
+       // Retrieve the hashed password and the salt prefix
+      await con.query('SELECT password FROM floodwatch_prototype.usertable WHERE username = $1;', [req.body.name], async(err,result)=> {
          
          // If the username doesn't exist in the database
-         if(result.length == 0) return res.status(404).send("User not found")
+         if(result.rows.length === 0) {
+            console.log(err)
+            return res.status(404).send("User not found")
+         }
 
-         const {salt,pass} = result.rows[0] // Separate destructure the tuple into their respective variables
+         console.log("User found")
+         let json = JSON.stringify(result.rows[0]);
+         json = JSON.parse(json)
 
-         if (await bcrypt.compare(req.body.password, pass)) res.status(200).send("Success! Log in approved")
+         const pass = json.password
+
+         console.log(pass)
+
+         if (await bcrypt.compare(req.body.password, pass)) 
+            res.status(200).send("Success! Log in approved")
          else res.status(401).send("Incorrect password")
       })
-   } catch{ res.status(500).send() }
+   } catch{ res.status(500).send("Internal Error") }
 })
 
 /* PATCH route to update usernames
    For this route, JSON data would also include a newUsername parameter:
       {
-         "newUsername": "new user here"
+         "newname": "new username here"
       }
 */
 router.patch("/updateUser", (req,res) =>{
@@ -71,12 +79,12 @@ router.patch("/updateUser", (req,res) =>{
                SET username = $1
                WHERE username = $2;`
       
-      con.query(query, [req.body.newUsername, req.body.username], (err,result)=>{
+      con.query(query, [req.body.newname, req.body.name], (err,result)=>{
          if(err){
             console.log("SQL Error: " + err)
-            res.status(500).send("Could not update password on database")
+            res.status(500).send("Could not update username on database")
          }
-         else{ res.status(200).send("Password successfully changed") }
+         else{ res.status(200).send("Username successfully changed") }
       })
    } catch{ res.status(500).send("Internal Error")}
 })
@@ -124,7 +132,7 @@ router.post('/register/test', async (req,res)=> {
       console.log(hash)
       const createUserQuery = 'INSERT INTO floodwatch_prototype.usertable (username,password) VALUES ($1,$2)' // Insert query for storing user profile info
 
-      con.query(createUserQuery, ["testUser3",hash], (err,result) =>{
+      con.query(createUserQuery, ["testUser4",hash], (err,result) =>{
          if(err){ 
             console.log("SQL Error: " + err)
             res.status(500).send("Error occurred while saving user profile")
