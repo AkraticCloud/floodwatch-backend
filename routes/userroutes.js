@@ -44,7 +44,7 @@ router.post(`/register`, async(req,res) =>{
 router.post('/login', async(req,res)=> {
    try{
        // Retrieve the hashed password and the salt prefix
-      await con.query('SELECT password FROM floodwatch_prototype.usertable WHERE username = $1;', [req.body.name], async(err,result)=> {
+      con.query('SELECT password FROM floodwatch_prototype.usertable WHERE username = $1;', [req.body.name], async(err,result)=> {
          
          // If the username doesn't exist in the database
          if(result.rows.length === 0) {
