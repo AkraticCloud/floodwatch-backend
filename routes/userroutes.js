@@ -62,7 +62,7 @@ router.post('/login', async(req,res)=> {
 
          if (await bcrypt.compare(req.body.password, pass)) 
             res.status(200).send("Success! Log in approved")
-         else res.status(401).send("Incorrect password")
+         else res.status(401).send("Incorrect password or username")
       })
    } catch{ res.status(500).send("Internal Error") }
 })

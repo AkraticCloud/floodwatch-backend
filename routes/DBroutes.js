@@ -2,6 +2,7 @@
 
 const con = require("../database/client")
 const express = require('express')
+const toGeoJSON = require('../utility/toGeoJSON')
 const router = express.Router()
 
 // Get route for retrieving user saved data, we only require username in the request to perform
@@ -19,7 +20,9 @@ router.get('/userData',(req,res)=> {
             console.log("SQL Error: " + err)
             res.status(500).send("Internal Error")
          }
-         else{res.json(result.rows)}
+         else{
+            res.status(200).send(toGeoJSON(result.rows))
+         }
       })
    }catch{ res.status(500).send("internal Error") }
 })
@@ -60,7 +63,8 @@ router.delete('/userData', (req,res) =>{
       isflooding: ,
       active:
    }
-   If the value is not provided, enter null for consistency
+   If the value is not provided, enter null for consistency.
+   For the lat and lon values, either enter the value of the user or reference point
 */
 router.post('/userData', (req,res)=>{
    const{username,sitename,stateid,countyid,latitude,longitude,rp_elevation,unit,gageheight,isflooding,active} = req.body
@@ -121,19 +125,7 @@ router.get("/nearestReferencePoint", (req,res) =>{
       if(err) res.status(500).send("Internal error")
       else{
          console.log(result.rows[0])
-         res.json({
-            id: result.rows[0].id,
-            sitename: result.rows[0].sitename,
-            stateid: result.rows[0].stateid,
-            countyid: result.rows[0].countyid,
-            latitude: result.rows[0].latitude,
-            longitude: result.rows[0].longitude,
-            rp_elevation: result.rows[0].rp_elevation,
-            unit: result.rows[0].unit,
-            gageheight: result.rows[0].gageheight,
-            isflooding: result.rows[0].isflooding,
-            active: result.rows[0].active
-         })
+         res.status(200).send(toGeoJSON(result.rows[0]))
       }
    })
 })

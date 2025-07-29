@@ -1,3 +1,4 @@
+//Utility function to retrieve api data and store in the database
 const con = require('../database/client')
 
 async function fetchAPIData(){
