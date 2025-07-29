@@ -35,7 +35,7 @@ router.get('/userData',(req,res)=> {
 */
 router.delete('/userData', (req,res) =>{
    try{
-      const query = `DELETE * FROM floodwatch_prototype.usersaveddata WHERE id = $1`
+      const query = `DELETE FROM floodwatch_prototype.usersaveddata WHERE id = $1`
 
       con.query(query,[req.body.id], (err,result)=>{
          if(err){
