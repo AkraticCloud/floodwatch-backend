@@ -7,7 +7,7 @@ const router = express.Router()
 // Get route for retrieving user saved data, we only require username in the request to perform
 router.get('/userData',(req,res)=> {
    try{
-      const query = `SELECT stateid, countyid, latitude, longitude, rp_elevation, unit, gageheight, isflooding, active, dateSaved
+      const query = `SELECT id, sitename, stateid, countyid, latitude, longitude, rp_elevation, unit, gageheight, isflooding, active, dateSaved
                      FROM floodWatch_prototype.usersaveddata 
                      WHERE userId = 
                         (SELECT id 
@@ -24,6 +24,25 @@ router.get('/userData',(req,res)=> {
    }catch{ res.status(500).send("internal Error") }
 })
 
+/*
+   Since the usersavaddata table is a collection of all user's saved data, we can reference the id (the table's Primary Key) in this format
+   {
+      "id": value here
+   }
+*/
+router.delete('/userData', (req,res) =>{
+   try{
+      const query = `DELETE * FROM floodwatch_prototype.usersaveddata WHERE id = $1`
+
+      con.query(query,[req.body.id], (err,result)=>{
+         if(err){
+            console.log("SQL Error: " + err)
+            res.status(500).send("Error occurred while deleting")
+         }
+         else res.status(200).send("Data deleted")
+      })
+   }catch{ res.status(500).send("Internal Error") }
+})
 
 /*
    POST route for flood risk data from USGS rtfi API 
@@ -43,7 +62,7 @@ router.get('/userData',(req,res)=> {
    }
    If the value is not provided, enter null for consistency
 */
-router.post('/saveUserFloodData', (req,res)=>{
+router.post('/userData', (req,res)=>{
    const{username,sitename,stateid,countyid,latitude,longitude,rp_elevation,unit,gageheight,isflooding,active} = req.body
    
    const userid = con.query `SELECT id 

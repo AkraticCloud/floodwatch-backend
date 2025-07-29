@@ -17,7 +17,7 @@ require('dotenv').config()
 */
 
 //POST route for storing newly created user profiles with hashed passwords
-router.post(`/register`, async(req,res) =>{
+router.post(`/user`, async(req,res) =>{
     
    try{
       
@@ -73,7 +73,7 @@ router.post('/login', async(req,res)=> {
          "newname": "new username here"
       }
 */
-router.patch("/updateUser", (req,res) =>{
+router.patch("/user", (req,res) =>{
    try{
       const query = `Update floodwatch_prototype.usertable
                SET username = $1
@@ -90,7 +90,7 @@ router.patch("/updateUser", (req,res) =>{
 })
 
 // PATCH route to update user passwords
-router.patch("/updatePass", async(req,res) =>{
+router.patch("/password", async(req,res) =>{
    try{
       const salt = await bcrypt.genSalt()
       const hash = await bcrypt.hash(req.body.password, salt)
@@ -109,7 +109,7 @@ router.patch("/updatePass", async(req,res) =>{
    } catch{ res.status(500).send("Internal Error")}
 })
 
-router.delete('/delete', (req,res) => {
+router.delete('/user', (req,res) => {
    try{
       const deleteQuery = "DELETE FROM floodwatch_prototype.usertable WHERE username = $1;";
       con.query(deleteQuery,[req.body.username], (err,result) =>{
