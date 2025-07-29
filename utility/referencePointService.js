@@ -51,13 +51,13 @@ async function fetchAPIData(){
                   console.log("SQL Error: " + err)
                   return 
                }
-               console.log("Data has been inserted")
+               
             })
          });
+         console.log(`State ${stateId} data has been inserted`)
       } 
       catch(error){
-         if(error.message.includes('404')) console.log(`State ${stateId} does not contain reference points. Skipping`)
-         else console.log(`Fetch Error on state ${stateId}: ` + error.message) 
+         console.log(`State ${stateId} does not contain reference points. Skipping`)
       }
    }
 }

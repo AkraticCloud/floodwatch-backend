@@ -1,8 +1,4 @@
-const api = require("./routes/APIroutes")
-const bcrypt = require('bcrypt')
-const cron = require('node-cron')
 const con = require('./database/client')
-const crypto = require('crypto')
 const express = require('express')
 const scheduler = require("./utility/scheduler")
 
