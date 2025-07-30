@@ -7,7 +7,7 @@ const dbRoutes = require('./DBroutes.js')
 
 const router = express.Router()
 
-router.use("/user", userRoutes)
+router.use("/", userRoutes)
 router.use("/db", dbRoutes)
 
 module.exports = router

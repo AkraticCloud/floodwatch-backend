@@ -17,7 +17,7 @@ require('dotenv').config()
 */
 
 //POST route for storing newly created user profiles with hashed passwords
-router.post(`/user`, async(req,res) =>{
+router.post('', async(req,res) =>{
     
    try{
       
@@ -27,7 +27,7 @@ router.post(`/user`, async(req,res) =>{
       const user = {name: req.body.name, pass: hash}
       const createUserQuery = 'INSERT INTO floodwatch_prototype.usertable (username,password) VALUES ($1,$2)' // Insert query for storing user profile info
 
-      con.query(createUserQuery, [user.name,user.pass], (err,result) =>{
+      con.query(createUserQuery, [user.name, user.pass], (err,result) =>{
          if(err){ 
             console.log("SQL Error: " + err)
             res.status(500).send("Error occurred while saving user profile")
@@ -117,7 +117,11 @@ router.delete('/user', (req,res) => {
             console.log("SQL Error: " + err)
             res.status(500).send("Could not delete profile");
          }
-         else{res.status(200).send("Profile successfully deleted")}
+         else{
+            console.log('Delete result:', result);
+            console.log(`User attempted for deletion: ${req.body.username}`);
+            res.status(200).send("Profile successfully deleted.");
+         }
       })
    }catch{ res.status(500).send("internal Error") }
 })
