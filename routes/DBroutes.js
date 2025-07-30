@@ -106,7 +106,7 @@ router.post('/userData', (req,res)=>{
       "lon": $2
    }
 */
-router.get("/nearestReferencePoint", (req,res) =>{
+router.post("/nearestReferencePoint", (req,res) =>{
    //The database includes the haversine function, which will be used to calculate the distance 
    // between a user's coordinate pair and the reference points to find the closest one to display info from.
    
